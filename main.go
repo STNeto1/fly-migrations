@@ -1,22 +1,48 @@
 package main
 
 import (
-	"fmt"
+	"fly-migrations/views"
 	"log"
-	"net/http"
+	"os"
+
+	"github.com/a-h/templ"
+	"github.com/gofiber/fiber/v2"
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	// echo server
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found")
+	}
 
-	mux := http.NewServeMux()
+	conn := createConnection()
+	_ = conn
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Request for -> ", r.URL.Path)
+	app := fiber.New(fiber.Config{})
+	// app.Use(logger.New())
+	app.Static("/public", "./public")
 
-		fmt.Fprintf(w, "Hello from %s", r.URL.Path)
+	app.Get("/", func(c *fiber.Ctx) error {
+		root := views.RootLayout("Skill Issue")
+
+		return render(root, c)
 	})
 
-	log.Println("Server started on :8080")
-	http.ListenAndServe(":8080", mux)
+	app.Listen(":8080")
+}
+
+func render(component templ.Component, c *fiber.Ctx) error {
+	c.Response().Header.SetContentType("text/html")
+	return component.Render(c.Context(), c.Response().BodyWriter())
+}
+
+func createConnection() *sqlx.DB {
+	db, err := sqlx.Connect("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Panicf("failed to open connection: %v\n", err)
+	}
+
+	return db
 }
