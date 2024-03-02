@@ -1,7 +1,12 @@
 package views
 
 templ JokeList(jokes []string) {
-	<section id="joke-list" hx-swap-oob="true">
+	<section
+ 		id="joke-list"
+ 		hx-target="#joke-list"
+ 		hx-swap="outerHTML"
+ 		hx-swap-oob="true"
+	>
 		if len(jokes) == 0 {
 			<p>No jokes found</p>
 		} else {

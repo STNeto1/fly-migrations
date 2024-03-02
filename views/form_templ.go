@@ -22,7 +22,7 @@ func JokeForm(prevValue string, err string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		templ_7745c5c3_Ctx = templ.ClearChildren(templ_7745c5c3_Ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form method=\"post\" id=\"joke-form\" hx-post=\"/create\" hx-target=\"#joke-form\" hx-swap=\"outerHTML\" hx-swap-oob=\"true\"><h2>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form method=\"post\" id=\"joke-form\" hx-post=\"/create\" hx-target=\"#joke-form\" hx-swap-oob=\"true\"><h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
