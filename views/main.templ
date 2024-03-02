@@ -1,6 +1,6 @@
 package views
 
-templ RootLayout(title string) {
+templ RootLayout(title string, jokes []string) {
 	<html>
 		<head>
 			<title>{ title }</title>
@@ -9,6 +9,7 @@ templ RootLayout(title string) {
 		</head>
 		<body>
 			@JokeForm("", "")
+			@JokeList(jokes)
 		</body>
 	</html>
 }

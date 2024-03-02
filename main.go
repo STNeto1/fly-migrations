@@ -18,14 +18,13 @@ func main() {
 	}
 
 	conn := createConnection()
-	_ = conn
 
 	app := fiber.New(fiber.Config{})
 	// app.Use(logger.New())
 	app.Static("/public", "./public")
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		root := views.RootLayout("Skill Issue")
+		root := views.RootLayout("Skill Issue", GetJokes(conn))
 
 		return render(root, c)
 	})
@@ -41,7 +40,21 @@ func main() {
 			return render(_form, c)
 		}
 
-		return render(views.RootLayout("Skill Issue"), c)
+		if _, err := conn.Exec("insert into jokes (joke) values ($1)", body.Joke); err != nil {
+			log.Println("error creating joke", err)
+
+			_form := views.JokeForm(body.Joke, "Error creating joke")
+			return render(_form, c)
+		}
+
+		_form := views.JokeForm("", "")
+		_list := views.JokeList(GetJokes(conn))
+
+		c.Response().Header.SetContentType("text/html")
+		_form.Render(c.Context(), c.Response().BodyWriter())
+		_list.Render(c.Context(), c.Response().BodyWriter())
+
+		return nil
 	})
 
 	app.Listen(":8080")
@@ -63,4 +76,16 @@ func createConnection() *sqlx.DB {
 	}
 
 	return db
+}
+
+func GetJokes(conn *sqlx.DB) []string {
+	var jokes []string
+	err := conn.Select(&jokes, "select joke from jokes order by id desc")
+
+	if err != nil {
+		log.Println("error fetching jokes", err)
+		return []string{}
+	}
+
+	return jokes
 }

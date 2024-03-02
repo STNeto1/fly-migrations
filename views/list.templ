@@ -1,0 +1,16 @@
+package views
+
+templ JokeList(jokes []string) {
+	<section id="joke-list" hx-swap-oob="true">
+		if len(jokes) == 0 {
+			<p>No jokes found</p>
+		} else {
+			<h2>Jokes</h2>
+			<ul>
+				for _, joke := range jokes {
+					<li>{ joke }</li>
+				}
+			</ul>
+		}
+	</section>
+}
