@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for fly-migrations-thrumming-glade-8989 on 2024-03-01T23:57:46-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'fly-migrations-thrumming-glade-8989'
+primary_region = 'gru'
+
+[build]
+
+[deploy]
+release_command = "/bin/ash -c 'migrate -source file://db/migrations -database $DATABASE_URL up'"
+
+[env]
+PORT = '8080'
+
+[http_service]
+internal_port = 8080
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
+processes = ['app']
+
+[[vm]]
+memory = '256mb'
+cpu_kind = 'shared'
+cpus = 1
