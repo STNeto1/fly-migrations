@@ -29,8 +29,26 @@ func main() {
 
 		return render(root, c)
 	})
+	app.Post("/create", func(c *fiber.Ctx) error {
+		var body jokeFormPayload
+		if err := c.BodyParser(&body); err != nil {
+			_form := views.JokeForm("", err.Error())
+			return render(_form, c)
+		}
+
+		if body.Joke == "" {
+			_form := views.JokeForm("", "Missing joke")
+			return render(_form, c)
+		}
+
+		return render(views.RootLayout("Skill Issue"), c)
+	})
 
 	app.Listen(":8080")
+}
+
+type jokeFormPayload struct {
+	Joke string `form:"joke"`
 }
 
 func render(component templ.Component, c *fiber.Ctx) error {

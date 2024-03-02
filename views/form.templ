@@ -1,0 +1,12 @@
+package views
+
+templ JokeForm(prevValue string, err string) {
+	<form method="post" hx-post="/create" id="joke-form" hx-target="#joke-form" hx-swap="outerHTML">
+		<h2>Give us your best joke!</h2>
+		<input name="joke" value={ prevValue } placeholder="Enter a joke"/>
+		if err!= "" {
+			<p>Error: { err }</p>
+		}
+		<button type="submit">Submit Joke</button>
+	</form>
+}
